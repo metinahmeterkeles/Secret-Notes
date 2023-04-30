@@ -13,30 +13,40 @@ window.config(padx=30, pady=30)
 def encyrpt_button_clicked():
     secret = secret_txt.get("1.0", tkinter.END)
     master = masterkey_entry.get()
-
-    if secret == "" or master == "":
-        messagebox.showerror("Error", "Please enter all information")
-
-    else:
-        dosya = open("secret.txt", "a", encoding="utf-8")
-        dosya.write(title_entry.get())
-        dosya.write(encode(secret, master))
-        dosya.close()
-
-
-def decyrpt_button_clicked():
-    secret = secret_txt.get("1.0", tkinter.END)
-    master = masterkey_entry.get()
+    title = title_entry.get()
 
     if secret == "" or master == "":
         messagebox.showinfo("Error", "Please enter all information")
 
     else:
-        dosya = open("secret.txt", "a", encoding="utf-8")
-        dosya.write(title_entry.get())
-        dosya.write(decode(secret_txt.get("1.0", tkinter.END), masterkey_entry.get()))
-        dosya.close()
+        #encryption
+        message_encryption = encode(master,secret)
 
+        with open("mysecret.txt","a") as data_file:
+            data_file.write(f"\n{title}\n{message_encryption}")
+
+        secret_txt.delete(1.0, tkinter.END)
+        masterkey_entry.delete(0,tkinter.END)
+        title_entry.delete(0,tkinter.END)
+
+
+def decyrpt_button_clicked():
+    secret = secret_txt.get("1.0", tkinter.END)
+    master = masterkey_entry.get()
+    title = title_entry.get()
+
+    if secret == "" or master == "":
+        messagebox.showinfo("Error", "Please enter all information")
+
+    else:
+        try:
+            message_decryption = decode(master,secret)
+            secret_txt.delete(1.0,tkinter.END)
+            masterkey_entry.delete(0,tkinter.END)
+            title_entry.delete(0, tkinter.END)
+            secret_txt.insert("1.0",message_decryption)
+        except:
+            messagebox.showinfo(title="Error!", message="Please enter encrypted text!")
 
 def encode(key, clear):
     enc = []
